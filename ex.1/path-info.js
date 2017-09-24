@@ -1,7 +1,8 @@
 const fs = require('fs');
 
 function pathInfo(path, callback) {
-	let result = {path: path,
+	let result = {
+		path: path,
 		type: '',
 		content: '',
 		childs: []

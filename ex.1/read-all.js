@@ -4,7 +4,7 @@ let options = {
 	encoding: 'utf-8'
 };
 
-function lookUpDir(dir) {
+function viewDir(dir) {
 	return new Promise((resolve, reject) => {
 		fs.readdir(dir, options, (error, files) => {
 			if (error)
@@ -27,7 +27,7 @@ function getFileInfo(file) {
 }
 
 function readAll(path) {
-	return lookUpDir(path)
+	return viewDir(path)
 		.then(files => {
 			return Promise.all(files.map(file => {
 				return getFileInfo(path + file);

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const read = require('./file-promise').read;
 
 let options = {
 	encoding: 'utf-8'
@@ -17,21 +18,20 @@ function viewDir(dir) {
 
 function getFileInfo(file) {
 	return new Promise((resolve, reject) => {
-		fs.readFile(file, options, (error, data) => {
-			if (error)
-				reject(error);
-			else
-				resolve({name: file, content: data});
-		});
+		read(file).then(data => {
+			resolve({name: file, content: data});
+		}, error => {
+			reject(error);
+		})
 	});
 }
 
 function readAll(path) {
 	return viewDir(path)
 		.then(files => {
-			return Promise.all(files.map(file => {
-				return getFileInfo(path + file);
-			}))
+			return Promise.all(
+				files.map(file => getFileInfo(path + file))
+			)
 		});
 }
 

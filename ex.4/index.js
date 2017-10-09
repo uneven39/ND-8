@@ -42,10 +42,14 @@ function translate(request, response) {
 					}
 				};
 
-			if (dataObj.text) {
+			if (dataObj.text !== '') {
 				let reqToYandex = https.request(reqOptions, handleYandexRes);
 				reqToYandex.write('text=' + dataObj.text);
 				reqToYandex.end();
+			} else {
+				response.writeHead(200, {'Content-Type': 'text/plain'});
+				response.write('empty');
+				response.end();
 			}
 		}
 	}

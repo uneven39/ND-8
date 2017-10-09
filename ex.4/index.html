@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h3>Перевод текста через <span class="text-danger">Яндекс</span>.Переводчик</h3>
+        </div>
+    </div>
+    <form id="translateForm">
+        <div class="form-group row">
+            <label for="lang" class="col-2 col-form-label">Язык перевода:</label>
+            <div class="col-10">
+                <select id="lang" class="form-control">
+                    <option value="ru-en">
+                        Рус - Eng
+                    </option>
+                    <option value="en-ru">
+                        Eng - Рус
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="input" class="col-2 col-form-label">Текст:</label>
+            <div class="col-10">
+                <textarea class="form-control" id="input" placeholder="Введите текст для перевода..."></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-danger">Перевести</button>
+            </div>
+        </div>
+    </form>
+    <div class="row d-none" id="translation-block">
+        <div class="col-2 p-3">
+            Перевод:
+        </div>
+        <div class="col-10">
+            <div class="card">
+                <div class="card-body p-3" id="translatedMsg">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    var langInput = document.getElementById('lang'),
+        textInput = document.getElementById('input'),
+        translateForm = document.getElementById('translateForm'),
+        translationBlockEl = document.getElementById('translation-block'),
+        msgEl = document.getElementById('translatedMsg');
+
+    function translate(event) {
+      event.preventDefault();
+      var xhr = new XMLHttpRequest(),
+          body = {
+      	    'lang': langInput.value,
+            'text': encodeURI(textInput.value)
+          };
+
+      xhr.open('POST', '/translate', true);
+      xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+      xhr.onreadystatechange = function() {
+        if (this.readyState !== 4) return;
+        var response = JSON.parse(this.response);
+        console.log(this.response);
+        if (response.text) {
+          translationBlockEl.classList.remove('d-none');
+          msgEl.textContent =  response.text.join(' ');
+        }
+      };
+
+      xhr.send(JSON.stringify(body));
+    }
+
+    translateForm.addEventListener('submit', translate, false);
+</script>
+
+</html>

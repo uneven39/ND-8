@@ -42,9 +42,11 @@ function translate(request, response) {
 					}
 				};
 
-			let reqToYandex = https.request(reqOptions, handleYandexRes);
-			reqToYandex.write('text=' + dataObj.text);
-			reqToYandex.end();
+			if (dataObj.text) {
+				let reqToYandex = https.request(reqOptions, handleYandexRes);
+				reqToYandex.write('text=' + dataObj.text);
+				reqToYandex.end();
+			}
 		}
 	}
 

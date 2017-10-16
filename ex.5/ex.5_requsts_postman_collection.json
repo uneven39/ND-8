@@ -170,6 +170,72 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "http://localhost:2000/rpc/users/",
+			"request": {
+				"url": "http://localhost:2000/rpc/users/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "method",
+							"value": "updateUser",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "user",
+							"value": "{\"name\": \"Todd\", \"score\": \"200\"}",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:2000/rpc/users/",
+			"request": {
+				"url": "http://localhost:2000/rpc/users/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "method",
+							"value": "deleteUser",
+							"description": "",
+							"type": "text"
+						},
+						{
+							"key": "user",
+							"value": "{\"name\": \"Todd\"}",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }

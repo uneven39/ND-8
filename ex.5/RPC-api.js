@@ -3,6 +3,7 @@ const usersApi = require('./users/users-api');
 
 const routerRPC = express.Router();
 
+// Сразу проверяем указание метода
 routerRPC.use('/users/', (request, response, next) => {
 	const method = request.body.method;
 	console.log('RPC requset: ', method);
@@ -10,7 +11,8 @@ routerRPC.use('/users/', (request, response, next) => {
 		response
 			.status(400)
 			.send('No method received');
-	next();
+	else
+		next();
 });
 
 routerRPC.post('/users/', (request, response) => {
@@ -63,12 +65,45 @@ routerRPC.post('/users/', (request, response) => {
 			if (name && score) {
 				usersApi.getUser(name)
 					.then(user => {
-						usersApi.updateUser(user, score);
+						if (user)
+							return usersApi.updateUser(user, score);
+						else
+							throw new Error(`No such user "${name}"`);
 					})
 					.then(() => {
 						response
 							.status(200)
-							.send(JSON.stringify(request.user));
+							.send(JSON.stringify(request.body.user));
+					})
+					.catch(error => {
+						response
+							.status(500)
+							.send(error.message);
+					});
+			} else {
+				response
+					.status(400)
+					.send('invalid request');
+			}
+			break;
+		case 'deleteUser':
+			try {
+				name = JSON.parse(request.body.user)['name'];
+			} catch(error) {
+				name = '';
+			}
+			if (name) {
+				usersApi.getUser(name)
+					.then(user => {
+						if (user)
+							return usersApi.deleteUser(user);
+						else
+							throw new Error(`No such user "${name}"`);
+					})
+					.then(() => {
+						response
+							.status(200)
+							.send(JSON.stringify(request.body.user));
 					})
 					.catch(error => {
 						response

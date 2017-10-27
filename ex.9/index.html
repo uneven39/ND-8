@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <title>Phone Book</title>
+    <style>
+        .no-gutters {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        .no-gutters > .col,
+        .no-gutters > [class*="col-"] {
+            padding-right: 0;
+            padding-left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Добавление контакта -->
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-header">
+                        Добавить контакт
+                    </div>
+                    <div class="card-body">
+                        <form id="addContactForm">
+                            <div class="form-group no-gutters row">
+                                <label for="addContactPhone" class="col-md-12 col-lg-3 col-form-label">Номер:</label>
+                                <div class="col-md-12 col-lg-9">
+                                    <input type="text"
+                                           class="form-control phoneNumber"
+                                           id="addContactPhone"
+                                           placeholder="Номер телефона">
+                                </div>
+                            </div>
+                            <div class="form-group no-gutters row">
+                                <label for="addContactName" class="col-md-12 col-lg-3 col-form-label">Имя:</label>
+                                <div class="col-md-12 col-lg-9">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="addContactName"
+                                           placeholder="Имя">
+                                </div>
+                            </div>
+                            <div class="form-group no-gutters row">
+                                <label for="addContactSurname" class="col-md-12 col-lg-3 col-form-label">Фамилия:</label>
+                                <div class="col-md-12 col-lg-9">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="addContactSurname"
+                                           placeholder="Фамилия">
+                                </div>
+                            </div>
+                            <div class="form-group error d-none">
+                                <div class="col alert alert-danger error-msg">
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <button class="btn btn-default" type="submit">
+                                    Добавить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Поиск и список контактов -->
+            <div class="col-4">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                Найти контакт
+                            </div>
+                            <div class="card-body">
+                                <form id="searchContact">
+                                    <div class="form-row">
+                                        <div class="form-group col-4">
+                                            <label for="searchContactPhone">Номер:</label>
+                                            <input type="text"
+                                                   class="form-control phoneNumber"
+                                                   id="searchContactPhone"
+                                                   placeholder="Номер телефона">
+                                        </div>
+
+                                        <div class="form-group col-3">
+                                            <label for="searchContactName">Имя:</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchContactName"
+                                                   placeholder="Имя контакта">
+                                        </div>
+
+                                        <div class="form-group col-5">
+                                            <label for="searchContactSurname">Фамилия:</label>
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchContactSurname"
+                                                   placeholder="Фамилия контакта">
+                                        </div>
+                                    </div>
+                                    <div class="form-row justify-content-md-center">
+                                        <div class="form-group">
+                                            <button class="btn btn-default" type="submit">
+                                                Найти
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                Список контактов
+                            </div>
+                            <div class="card-body" >
+                                <select class="form-control" id="contactsList" style="overflow-y: auto">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Подробная информация о контакте -->
+            <div class="col-5">
+                    <div class="card">
+                        <div class="card-header">
+                            Информация о контакте
+                        </div>
+                        <div class="card-body">
+                            <form id="contactForm">
+                                <input type="text" hidden id="contactId">
+                                <div class="form-group no-gutters row">
+                                    <label for="contactPhone" class="col-md-12 col-lg-3 col-form-label">Номер:</label>
+                                    <div class="col-md-12 col-lg-9">
+                                        <input type="text"
+                                               class="form-control phoneNumber contactInfo"
+                                               id="contactPhone"
+                                               disabled
+                                               placeholder="Номер телефона">
+                                    </div>
+                                </div>
+                                <div class="form-group no-gutters row">
+                                    <label for="contactName" class="col-md-12 col-lg-3 col-form-label">Имя:</label>
+                                    <div class="col-md-12 col-lg-9">
+                                        <input type="text"
+                                               class="form-control contactInfo"
+                                               id="contactName"
+                                               disabled
+                                               placeholder="Имя">
+                                    </div>
+                                </div>
+                                <div class="form-group no-gutters row">
+                                    <label for="contactSurname" class="col-md-12 col-lg-3 col-form-label">Фамилия:</label>
+                                    <div class="col-md-12 col-lg-9">
+                                        <input type="text"
+                                               class="form-control contactInfo"
+                                               id="contactSurname"
+                                               disabled
+                                               placeholder="Фамилия">
+                                    </div>
+                                </div>
+                                <div class="form-group error d-none">
+                                    <div class="col alert alert-danger error-msg">
+                                    </div>
+                                </div>
+                                <div class="form-group text-center">
+                                    <button class="btn btn-primary" type="button" id="editContact">
+                                        Редактировать
+                                    </button>
+                                    <button class="btn btn-danger" type="button" id="deleteContact">
+                                        Удалить
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script>
+	var contactsList        = [],
+        contactsListEl      = document.getElementById('contactsList'),
+        addContactForm      = document.getElementById('addContactForm'),
+        contactForm         = document.getElementById('contactForm'),
+        searchContactForm   = document.getElementById('searchContact'),
+        editContactBtn      = document.getElementById('editContact'),
+        deleteContactBtn    = document.getElementById('deleteContact');
+
+    addContactForm.addEventListener('submit', addContact, false);
+
+    function fillContactInfo(contactObj) {
+		var id = contactObj._id,
+			phone = contactObj.phone,
+			name = contactObj.name,
+			surname = contactObj.surname;
+		document.getElementById('contactPhone').value   = phone;
+		document.getElementById('contactName').value    = name;
+		document.getElementById('contactSurname').value = surname;
+		document.getElementById('contactId').value      = id;
+    }
+
+    contactsListEl.onclick = function(event) {
+    	var targetEl = event.target;
+    	if (targetEl.classList.contains('contactItem')) {
+    		var value = targetEl.getAttribute('value'),
+                xhr = new XMLHttpRequest();
+            console.info('contact id: ', value);
+            xhr.open('GET', '/contacts/' + value);
+            xhr.onreadystatechange = function() {
+            	var contactInfo = {};
+				if (this.readyState !== 4) return;
+				if (this.status === 200) {
+					contactInfo = JSON.parse(this.responseText)[0];
+					console.log(contactInfo);
+					fillContactInfo(contactInfo);
+				} else {
+					console.warn('cannot get contact info');
+				}
+            };
+            xhr.send();
+        }
+    };
+
+    deleteContactBtn.onclick = function () {
+    	var xhr = new XMLHttpRequest(),
+            id = document.getElementById('contactId').value;
+    	xhr.open('DELETE', '/contacts/' + id);
+    	xhr.onreadystatechange = function() {
+    		contactForm.reset();
+    		getContactsList();
+        };
+    	xhr.send();
+    };
+
+    getContactsList();
+
+    document.body.onkeyup = function(event) {
+    	var targetEl = event.target;
+    	if (targetEl.classList.contains('phoneNumber')) {
+    		var value = targetEl.value;
+    		targetEl.value = value.replace(/\D/g, '');
+        }
+    };
+
+    function fillContactsList(dataArray) {
+		contactsListEl.setAttribute('size', dataArray.length);
+		contactsListEl.innerHTML = '';
+        dataArray.forEach(function(contact, i) {
+			var contactOpt = document.createElement('option');
+			contactOpt.setAttribute('value', contact._id);
+			contactOpt.className += ' contactItem';
+			contactOpt.innerText = contact.name + ' ' + contact.surname + ': ' + contact.phone;
+			contactsListEl.appendChild(contactOpt);
+		})
+    }
+
+    function getContactsList() {
+    	var xhr = new XMLHttpRequest();
+
+    	xhr.open('GET', '/contacts', true);
+    	xhr.onreadystatechange = function() {
+    	    if (this.readyState !== 4) return;
+    	    if (this.status === 200) {
+    	    	console.log(JSON.parse(this.responseText));
+    	    	contactsList = JSON.parse(this.responseText);
+    	    	contactsListEl.setAttribute('size', contactsList.length);
+                fillContactsList(contactsList);
+            } else {
+    	    	console.warn('cannot het contacts list');
+            }
+        };
+        xhr.send();
+    }
+
+	function addContact(event) {
+		event.preventDefault();
+		var phone           = document.getElementById('addContactPhone').value,
+			name            = document.getElementById('addContactName').value,
+			surname         = document.getElementById('addContactSurname').value,
+			errorWrapperEl  = addContactForm.querySelector('.error'),
+			errorMsgEl      = addContactForm.querySelector('.error .error-msg'),
+			xhr             = new XMLHttpRequest();
+		newContact  = {
+			"phone"   : phone,
+			"name"    : name,
+			"surname" : surname
+		};
+			if ((phone.length > 1) && (name.length > 1) && (surname.length > 1)) {
+			xhr.open('POST', '/contacts', true);
+			xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+			xhr.onreadystatechange = function() {
+				if (this.readyState !== 4) return;
+				if (this.status === 200) {
+					console.log('Add contact: ', this.response);
+					errorWrapperEl.classList.add('d-none');
+					errorMsgEl.textContent = '';
+					addContactForm.reset();
+					getContactsList();
+				} else {
+					errorWrapperEl.classList.remove('d-none');
+					errorMsgEl.textContent = xhr.responseText;
+				}
+			};
+			xhr.send(JSON.stringify(newContact));
+		} else {
+			var errorArr = [];
+			if (phone.length < 2)
+				errorArr.push('телефон');
+			if (name.length < 2)
+				errorArr.push('имя');
+			if (surname.length < 2)
+				errorArr.push('фамилия');
+			errorWrapperEl.classList.remove('d-none');
+			errorMsgEl.textContent = 'Заполните: ' + errorArr.join(', ');
+		}
+	}
+
+</script>
+</html>

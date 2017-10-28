@@ -36,7 +36,17 @@ MongoClient.connect(url)
 		});
 
 		contactsRt.get('/', (req, res) => {
-			db.collection('contacts').find().toArray()
+			let filter = {};
+			if (req.query.phone || req.query.name || req.query.surname) {
+				console.log('query parameters: ', req.query);
+				const phone 	= req.query.phone,
+							name 		= req.query.name,
+							surname = req.query.surname;
+				if (phone) filter['phone'] = phone;
+				if (name) filter['name'] = name;
+				if (surname) filter['surname'] = surname;
+			}
+			db.collection('contacts').find(filter).toArray()
 				.then(contacts => {
 					res.status(200);
 					res.send(contacts);
@@ -55,6 +65,24 @@ MongoClient.connect(url)
 					console.log(contact);
 					res.status(200);
 					res.send(contact);
+				})
+				.catch(error => {
+					res.status(500);
+					res.send(error);
+				})
+		});
+
+		contactsRt.put('/:id', (req, res) => {
+			const id = new ObjectId(req.params['id']),
+				body = req.body;
+			console.log('put: ', id);
+			console.log(req.body.phone);
+			console.log(req.body.name);
+			console.log(req.body.surname);
+			db.collection('contacts').updateOne({_id: id}, {phone: body.phone, name: body.name, surname: body.surname})
+				.then(response => {
+					res.status(200);
+					res.send(response);
 				})
 				.catch(error => {
 					res.status(500);

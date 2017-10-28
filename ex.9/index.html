@@ -176,8 +176,14 @@
                                     <button class="btn btn-primary" type="button" id="editContact">
                                         Редактировать
                                     </button>
+                                    <button class="btn btn-success d-none" type="button" id="saveContact">
+                                        Сохранить
+                                    </button>
                                     <button class="btn btn-danger" type="button" id="deleteContact">
                                         Удалить
+                                    </button>
+                                    <button class="btn btn-default d-none" type="button" id="cancelEdit">
+                                        Отмена
                                     </button>
                                 </div>
                             </form>
@@ -190,25 +196,25 @@
 </body>
 <script>
 	var contactsList        = [],
+		contactInfo         = {},
+        selectedContactInfo = undefined,
         contactsListEl      = document.getElementById('contactsList'),
         addContactForm      = document.getElementById('addContactForm'),
         contactForm         = document.getElementById('contactForm'),
         searchContactForm   = document.getElementById('searchContact'),
         editContactBtn      = document.getElementById('editContact'),
-        deleteContactBtn    = document.getElementById('deleteContact');
+        saveContactBtn      = document.getElementById('saveContact'),
+        deleteContactBtn    = document.getElementById('deleteContact'),
+        cancelEditBtn       = document.getElementById('cancelEdit');
 
     addContactForm.addEventListener('submit', addContact, false);
+    searchContactForm.addEventListener('submit', searchContact, false);
 
-    function fillContactInfo(contactObj) {
-		var id = contactObj._id,
-			phone = contactObj.phone,
-			name = contactObj.name,
-			surname = contactObj.surname;
-		document.getElementById('contactPhone').value   = phone;
-		document.getElementById('contactName').value    = name;
-		document.getElementById('contactSurname').value = surname;
-		document.getElementById('contactId').value      = id;
-    }
+    contactForm.addEventListener('finishEdit', disableContactForm, false);
+    contactForm.addEventListener('startEdit', enableContactForm, false);
+
+    var startEdit = new Event('startEdit');
+	var finishEdit = new Event('finishEdit');
 
     contactsListEl.onclick = function(event) {
     	var targetEl = event.target;
@@ -235,13 +241,53 @@
     deleteContactBtn.onclick = function () {
     	var xhr = new XMLHttpRequest(),
             id = document.getElementById('contactId').value;
-    	xhr.open('DELETE', '/contacts/' + id);
-    	xhr.onreadystatechange = function() {
-    		contactForm.reset();
-    		getContactsList();
-        };
-    	xhr.send();
+    	if (id) {
+			xhr.open('DELETE', '/contacts/' + id);
+			xhr.onreadystatechange = function() {
+				contactForm.reset();
+				getContactsList();
+			};
+            xhr.send();
+        }
+		contactForm.dispatchEvent(finishEdit);
     };
+
+    editContactBtn.onclick = function () {
+    	console.log(selectedContactInfo);
+		if (!selectedContactInfo) return false;
+        contactForm.dispatchEvent(startEdit);
+    };
+
+    saveContactBtn.onclick = function () {
+    	var xhr = new XMLHttpRequest(),
+            dataObj = {
+    		    'phone': document.getElementById('contactPhone').value,
+				'name': document.getElementById('contactName').value,
+				'surname': document.getElementById('contactSurname').value
+            },
+			body = JSON.stringify(dataObj);
+
+    	xhr.open('PUT', '/contacts/' + selectedContactInfo._id);
+		xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    	xhr.onreadystatechange = function () {
+    		if (this.readyState !== 4) return;
+			if (this.status === 200) {
+				console.log('Updated contact: ', this.response);
+                getContactsList();
+				contactForm.reset();
+				contactForm.dispatchEvent(finishEdit);
+			} else {
+				console.warn(this.response);
+			}
+		};
+    	xhr.send(body);
+    };
+
+	cancelEditBtn.onclick = function () {
+		contactForm.dispatchEvent(finishEdit);
+		console.log(contactInfo);
+		fillContactInfo(selectedContactInfo);
+	};
 
     getContactsList();
 
@@ -252,6 +298,68 @@
     		targetEl.value = value.replace(/\D/g, '');
         }
     };
+
+	function searchContact(event) {
+		event.preventDefault();
+		var phone   = document.getElementById('searchContactPhone').value,
+			name    = document.getElementById('searchContactName').value,
+			surname = document.getElementById('searchContactSurname').value,
+			xhr     = new XMLHttpRequest();
+			if (phone || name || surname) {
+			xhr.open('GET', '/contacts?' + 'phone=' + phone + '&name=' + name + '&surname=' + surname);
+			xhr.onreadystatechange = function () {
+				if (this.readyState !== 4) return;
+				if (this.status === 200) {
+					contactInfo = JSON.parse(this.responseText)[0];
+					console.log(contactInfo);
+					fillContactInfo(contactInfo);
+					searchContactForm.reset();
+				} else {
+					console.warn('cannot get contact info');
+				}
+			};
+			xhr.send();
+		}
+	}
+
+	function fillContactInfo(contactObj) {
+		var id = contactObj._id ? contactObj._id : '',
+			phone = contactObj.phone,
+			name = contactObj.name,
+			surname = contactObj.surname;
+		selectedContactInfo = contactObj;
+		console.log(selectedContactInfo);
+		document.getElementById('contactPhone').value   = phone;
+		document.getElementById('contactName').value    = name;
+		document.getElementById('contactSurname').value = surname;
+		document.getElementById('contactId').value      = id;
+	}
+
+	function disableContactForm() {
+		var inputs = this.querySelectorAll('input');
+		inputs.forEach(function(input, i) {
+			input.disabled = true;
+		});
+		editContactBtn.classList.remove('d-none');
+		editContactBtn.disabled = false;
+		cancelEditBtn.classList.add('d-none');
+        cancelEditBtn.disabled = true;
+        saveContactBtn.classList.add('d-none');
+        saveContactBtn.disabled = true;
+	}
+
+    function enableContactForm() {
+		var inputs = this.querySelectorAll('input');
+		inputs.forEach(function(input, i) {
+			input.disabled = false;
+		});
+		editContactBtn.classList.add('d-none');
+		editContactBtn.disabled = true;
+        cancelEditBtn.classList.remove('d-none');
+		cancelEditBtn.disabled = false;
+        saveContactBtn.classList.remove('d-none');
+		saveContactBtn.disabled = false;
+	}
 
     function fillContactsList(dataArray) {
 		contactsListEl.setAttribute('size', dataArray.length);
@@ -274,8 +382,9 @@
     	    if (this.status === 200) {
     	    	console.log(JSON.parse(this.responseText));
     	    	contactsList = JSON.parse(this.responseText);
-    	    	contactsListEl.setAttribute('size', contactsList.length);
+    	    	size = (contactsList.length < 2) ? 2 : contactsList.length;
                 fillContactsList(contactsList);
+                contactsListEl.setAttribute('size', size);
             } else {
     	    	console.warn('cannot het contacts list');
             }

@@ -10,9 +10,10 @@ MongoClient.connect(url)
 	.then(db => {
 		app.use(bodyParser.json());
 		app.use(bodyParser.urlencoded({'extended': true}));
+		app.use(express.static('public'));
 
 		app.get('/', (req,res) => {
-			res.sendFile(__dirname + '/index.html');
+			res.sendFile(__dirname + '/public/index.html');
 		});
 
 		const contactsRt = express.Router();
@@ -42,14 +43,19 @@ MongoClient.connect(url)
 				const phone 	= req.query.phone,
 							name 		= req.query.name,
 							surname = req.query.surname;
-				if (phone) filter['phone'] = phone;
-				if (name) filter['name'] = name;
-				if (surname) filter['surname'] = surname;
+				if (phone)		filter['phone'] = phone;
+				if (name)			filter['name'] = name;
+				if (surname)	filter['surname'] = surname;
 			}
 			db.collection('contacts').find(filter).toArray()
 				.then(contacts => {
-					res.status(200);
-					res.send(contacts);
+					if (contacts.length) {
+						res.status(200);
+						res.send(contacts);
+					} else {
+						res.status(400);
+						res.send('Not found: ' + JSON.stringify(req.query));
+					}
 				})
 				.catch(error => {
 					res.status(500);
@@ -74,20 +80,26 @@ MongoClient.connect(url)
 
 		contactsRt.put('/:id', (req, res) => {
 			const id = new ObjectId(req.params['id']),
-				body = req.body;
-			console.log('put: ', id);
-			console.log(req.body.phone);
-			console.log(req.body.name);
-			console.log(req.body.surname);
-			db.collection('contacts').updateOne({_id: id}, {phone: body.phone, name: body.name, surname: body.surname})
-				.then(response => {
-					res.status(200);
-					res.send(response);
-				})
-				.catch(error => {
-					res.status(500);
-					res.send(error);
-				})
+						body = req.body,
+						phone = body.phone,
+						name = body.name,
+						surname = body.surname;
+			console.log('put: ', id, body);
+			if (phone && name && surname) {
+				db.collection('contacts')
+					.updateOne({_id: id}, {phone: body.phone, name: body.name, surname: body.surname, extras: body.extras})
+					.then(response => {
+						res.status(200);
+						res.send(response);
+					})
+					.catch(error => {
+						res.status(500);
+						res.send(error);
+					})
+			} else {
+				res.status(400);
+				res.send('Некорректный ввод');
+			}
 		});
 
 		contactsRt.delete('/:id', (req, res) => {

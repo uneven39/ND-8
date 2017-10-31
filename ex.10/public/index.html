@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ex.10 - tasks</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+    <script src="main.js"></script>
+</head>
+<body>
+<div class="container tasks-app">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Пользователи
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <h5 class="col">Добавить пользователя</h5>
+                    </div>
+                    <form class="users-new">
+                        <div class="form-group row">
+                            <label for="addUser" class="col col-form-label">Имя:</label>
+                            <div class="col">
+                                <input type="text"
+                                       class="form-control users-new-value"
+                                       id="addUser">
+                            </div>
+                            <div class="col">
+                                <input type="submit"
+                                       class="btn btn-primary"
+                                       value="Добавить">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <h5 class="col">Список пользователей</h5>
+                    </div>
+                    <form>
+                        <div class="form-group row">
+                            <select class="form-control users-list" style="overflow-y: auto">
+                            </select>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <h5 class="col">Редактирование пользователей</h5>
+                    </div>
+                    <form class="users-edit">
+                        <div class="form-group row">
+                            <label for="renameUser" class="col col-form-label">Имя:</label>
+                            <div class="col">
+                                <input type="text"
+                                       class="form-control users-edit-value"
+                                       id="renameUser">
+                            </div>
+                            <div class="col">
+                                <input type="button"
+                                       class="btn btn-warning"
+                                       value="Обновить">
+                            </div>
+                            <div class="col">
+                                <input type="button"
+                                       class="btn btn-danger"
+                                       value="Удалить">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    Задачи
+                </div>
+                <div class="card-body">
+                    <form class="tasks">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

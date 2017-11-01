@@ -119,6 +119,65 @@ mongoose.connect(dbUrl, {useMongoClient: true})
 				res.status(400);
 			}
 		});
+
+		// Показываем запросы на /tasks
+		tasksRT.use((req, res, next) => {
+			console.log('tasks method: ', req.method);
+			console.log('tasks url: ', req.originalUrl);
+			if ((req.method === 'POST') || (req.method === 'PUT')) {
+				console.log('tasks request body: ', req.body);
+			}
+			console.log('====='.repeat(5));
+			next();
+		});
+
+		// Список задач:
+		tasksRT.get('/', (req, res) => {
+			Task.find({})
+				.then(users => {
+					res.send(users);
+					res.status(200);
+				})
+				.catch(error => {
+					res.send(error);
+					res.status(500);
+				})
+		});
+
+		// Создать задачу:
+		tasksRT.post('/', (req, res) => {
+			if (req.body.title && req.body.description && req.body.user) {
+				let newTask = new Task(
+					{title: req.body.title,
+						description: req.body.description,
+						isOpen: true, // новая задача становится открытой
+						user: req.body.user
+					}
+				);
+				newTask.save((error, newUser) => {
+					if (error) {
+						res.send(error);
+						res.status(500);
+					} else {
+						res.send(newUser);
+						res.status(200);
+					}
+				})
+			} else {
+				res.send('name required');
+				res.status(400);
+			}
+		});
+
+		// Обновить задачу:
+		tasksRT.put('/:id', (req, res) => {
+
+		});
+
+		// Удалить задачу:
+		tasksRT.delete('/:id', (req, res) => {
+
+		});
 	})
 	.catch(error => {
 		console.log(error);

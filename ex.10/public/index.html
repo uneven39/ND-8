@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>ex.10 - tasks</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
-    <script src="main.js"></script>
 </head>
 <body>
 <div class="container tasks-app">
@@ -12,7 +11,7 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Пользователи
+                    <h4>Пользователи</h4>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -28,6 +27,7 @@
                             </div>
                             <div class="col">
                                 <input type="submit"
+                                       disabled
                                        class="btn btn-primary"
                                        value="Добавить">
                             </div>
@@ -47,20 +47,23 @@
                     </div>
                     <form class="users-edit">
                         <div class="form-group row">
-                            <label for="renameUser" class="col col-form-label">Имя:</label>
+                            <label for="renameUser" class="col col-form-label">Новое имя:</label>
                             <div class="col">
                                 <input type="text"
+                                       disabled
                                        class="form-control users-edit-value"
                                        id="renameUser">
                             </div>
                             <div class="col">
                                 <input type="button"
-                                       class="btn btn-warning"
+                                       disabled
+                                       class="btn btn-warning user-edit-confirm"
                                        value="Обновить">
                             </div>
                             <div class="col">
                                 <input type="button"
-                                       class="btn btn-danger"
+                                       disabled
+                                       class="btn btn-danger user-delete-confirm"
                                        value="Удалить">
                             </div>
                         </div>
@@ -71,7 +74,7 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Задачи
+                    <h4>Задачи</h4>
                 </div>
                 <div class="card-body">
                     <form class="tasks">
@@ -84,4 +87,5 @@
 </div>
 
 </body>
+<script src="main.js"></script>
 </html>

@@ -85,7 +85,7 @@ mongoose.connect(dbUrl, {useMongoClient: true})
 		usersRT.put('/:id', (req, res) => {
 			let id 		= req.params['id'],
 				newName	=	req.body.name;
-			if (id) {
+			if (id && newName) {
 				User.update({_id: id}, {name: newName})
 					.then(updated => {
 						res.send(updated);
@@ -96,7 +96,7 @@ mongoose.connect(dbUrl, {useMongoClient: true})
 						res.status(500);
 					})
 			} else {
-				res.send('id required');
+				res.send('id & newName required');
 				res.status(400);
 			}
 		});

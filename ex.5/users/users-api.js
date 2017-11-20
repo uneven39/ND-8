@@ -60,12 +60,12 @@ function createUser(name, score) {
 		})
 }
 
-function updateUser(user, score) {
+function updateUser(userName, score) {
 	return readFile('./users/users.json')
 		.then(data => {
 			let users = JSON.parse(data),
 					found = users.find((item, i) => {
-					if (item.name === user.name) {
+					if (item.name === userName) {
 						users[i].score = score;
 						return true;
 					}
@@ -77,12 +77,12 @@ function updateUser(user, score) {
 		})
 }
 
-function deleteUser(user) {
+function deleteUser(userName) {
 	return readFile('./users/users.json')
 		.then(data => {
 			let users = JSON.parse(data),
 					found = users.find((item, i) => {
-						if (item.name === user.name) {
+						if (item.name === userName) {
 							users.splice(i, 1);
 							return true
 						}

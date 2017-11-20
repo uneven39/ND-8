@@ -73,7 +73,7 @@ routerREST.delete('/users/:userName', (request, response) => {
 	const user = response.locals.user;
 	console.log(name);
 	if (user) {
-		usersApi.deleteUser(name)
+		usersApi.deleteUser(user)
 			.then(() => {
 				response
 					.status(200)

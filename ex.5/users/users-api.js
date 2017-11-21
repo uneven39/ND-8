@@ -24,7 +24,7 @@ function writeFile(file, data) {
 
 function readUsers() {
 	return new Promise((resolve, reject) => {
-		fs.readFile('./users/users.json', 'utf8', (error, data) => {
+		fs.readFile(__dirname + '/users.json', 'utf8', (error, data) => {
 			if (error)
 				reject(error);
 			else
@@ -49,22 +49,22 @@ function getUser(name) {
 
 function createUser(name, score) {
 	const newUser = {'name': name, 'score': score};
-	return readFile('./users/users.json')
+	return readFile(__dirname + '/users.json')
 		.then(data => {
 			let users = JSON.parse(data);
 			users.push(newUser);
 			return JSON.stringify(users);
 		})
 		.then(data => {
-			writeFile('./users/users.json', data);
+			writeFile(__dirname + '/users.json', data);
 		})
 }
 
 function updateUser(user, score) {
-	return readFile('./users/users.json')
+	return readFile(__dirname + '/users.json')
 		.then(data => {
 			let users = JSON.parse(data),
-					found = users.find((item, i) => {
+				found = users.find((item, i) => {
 					if (item.name === user.name) {
 						users[i].score = score;
 						return true;
@@ -73,24 +73,24 @@ function updateUser(user, score) {
 			return JSON.stringify(users);
 		})
 		.then(users => {
-			writeFile('./users/users.json', users);
+			writeFile(__dirname + '/users.json', users);
 		})
 }
 
 function deleteUser(user) {
-	return readFile('./users/users.json')
+	return readFile(__dirname + '/users.json')
 		.then(data => {
 			let users = JSON.parse(data),
-					found = users.find((item, i) => {
-						if (item.name === user.name) {
-							users.splice(i, 1);
-							return true
-						}
-			});
+				found = users.find((item, i) => {
+					if (item.name === user.name) {
+						users.splice(i, 1);
+						return true;
+					}
+				});
 			return JSON.stringify(users);
 		})
 		.then(data => {
-			writeFile('./users/users.json', data)
+			writeFile(__dirname + '/users.json', data)
 		})
 }
 

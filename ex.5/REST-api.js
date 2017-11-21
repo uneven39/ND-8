@@ -16,11 +16,14 @@ routerREST.get('/users/', (request, response) => {
 	usersApi.readUsers().then(
 		users => response
 			.status(200)
-			.send(users)
+			.send(JSON.parse(users))
 	)
 		.catch(error => response
 			.status(500)
-			.send(error.message));
+			.send({
+				message: 'Internal error',
+				error: error.message
+			}));
 });
 
 routerREST.post('/users/', (request, response) => {
@@ -31,17 +34,26 @@ routerREST.post('/users/', (request, response) => {
 			.then(() => {
 				response
 					.status(200)
-					.send(JSON.stringify(request.body));
+					.send({
+						message: 'User created successfully!',
+						newUser: request.body
+					});
 			})
 			.catch(error => {
 				response
 					.status(500)
-					.send(error.message);
+					.send({
+						message: 'Internal error',
+						error: error.message
+					});
 			});
 	} else {
 		response
 			.status(400)
-			.send('invalid request');
+			.send({
+				message: 'Invalid request',
+				error: 'Invalid request'
+			});
 	}
 });
 
@@ -54,40 +66,60 @@ routerREST.put('/users/:userName', (request, response) => {
 			.then(() => {
 				response
 					.status(200)
-					.send(JSON.stringify(request.body));
+					.send({
+						message: 'User updated successfully!',
+						updatedUser: {
+							name: name,
+							score: score
+						}
+					})
 			})
 			.catch(error => {
 				response
 					.status(500)
-					.send(error.message);
+					.send({
+						message: 'Internal error',
+						error: error.message
+					});
 			});
 	} else {
 		response
 			.status(404)
-			.send(`No such user "${name}"`);
+			.send({
+				message: `User ${name} not found`,
+				error: 'Invalid request'
+			});
 	}
 });
 
 routerREST.delete('/users/:userName', (request, response) => {
 	const name = request.params['userName'];
 	const user = response.locals.user;
-	console.log(name);
 	if (user) {
 		usersApi.deleteUser(user)
 			.then(() => {
 				response
 					.status(200)
-					.send(JSON.stringify(request.body));
+					.send({
+						message: 'User updated successfully!',
+						deletedUser: user
+					})
 			})
 			.catch(error => {
 				response
 					.status(500)
-					.send(error.message);
+					.send({
+						message: 'Internal error',
+						error: error.message
+					});
 			});
 	} else {
 		response
 			.status(404)
-			.send(`No such user "${name}"`);
+			.send({
+				message: `User ${name} not found`,
+				error: 'Invalid request'
+			});
 	}
 });
 
